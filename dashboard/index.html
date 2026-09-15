@@ -1,22 +1,81 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>FireSense AI Dashboard</title><link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FireSense AI Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<header><div><p class="eyebrow">EXPLAINABLE MULTI-SENSOR SAFETY SYSTEM</p><h1>FireSense AI</h1><p class="subtitle">Adaptive fire risk and occupancy monitoring</p></div><div class="connection"><span id="connectionDot"></span><span id="connectionText">Connecting…</span></div></header>
-<main>
-<section class="toolbar"><label>Monitoring node <select id="nodeSelect"><option value="NODE_01">NODE_01</option></select></label><div id="modelBadge" class="badge">Baseline fallback</div><div id="warmup">Window: 0/40</div></section>
-<section class="hero-grid">
-<article id="riskCard" class="risk-card safe"><p>CURRENT RISK</p><h2 id="riskTier">Waiting</h2><div id="riskConfidence">No readings received</div></article>
-<article class="occupancy-card"><p>OCCUPANCY</p><h2 id="occupancy">Unknown</h2><div id="occupancyDetail">PIR and mmWave fusion</div></article>
-<article class="explanation-card"><p>WHY THIS DECISION?</p><div id="explanation">Start the simulator to receive an explanation.</div><div id="contributors"></div></article>
-</section>
-<section class="sensor-grid">
-<article><span>MQ-2 response</span><strong id="mq2">--</strong><small>normalized</small></article><article><span>MQ-7 response</span><strong id="mq7">--</strong><small>normalized</small></article><article><span>Temperature</span><strong id="temperature">--</strong><small>°C</small></article><article><span>Humidity</span><strong id="humidity">--</strong><small>% RH</small></article><article><span>Flame</span><strong id="flame">--</strong><small>digital</small></article><article><span>Latency</span><strong id="latency">--</strong><small>milliseconds</small></article>
-</section>
-<section class="panel chart-panel"><div class="panel-title"><h3>Recent sensor trends</h3><span>Last 50 readings</span></div><canvas id="trendChart" width="1000" height="300"></canvas><div class="legend"><i class="smoke"></i>MQ-2 <i class="co"></i>MQ-7 <i class="temp"></i>Temperature (scaled)</div></section>
-<section class="bottom-grid"><article class="panel"><div class="panel-title"><h3>Event history</h3><span id="eventCount">0 events</span></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Tier</th><th>MQ-2</th><th>MQ-7</th><th>Temp</th><th>Occupied</th></tr></thead><tbody id="historyBody"><tr><td colspan="6">No readings yet</td></tr></tbody></table></div></article>
-<article class="panel metrics"><div class="panel-title"><h3>System metrics</h3></div><div><span>Total predictions</span><strong id="totalPredictions">0</strong></div><div><span>Average latency</span><strong id="averageLatency">0 ms</strong></div><div><span>95th percentile</span><strong id="p95Latency">0 ms</strong></div><div><span>Explanation</span><strong id="explanationMethod">--</strong></div></article></section>
-</main><script src="/app.js"></script></body></html>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="FireSense AI dashboard home">
+      <span class="brand-mark"><span></span></span>
+      <span><strong>FireSense</strong><em>AI</em><small>EXPLAINABLE SAFETY MONITORING</small></span>
+    </a>
+    <div class="header-actions">
+      <span class="system-label">LIVE PROTOTYPE</span>
+      <div class="connection"><span id="connectionDot"></span><span id="connectionText">Connecting...</span></div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="welcome-row">
+      <div>
+        <p class="eyebrow">MULTI-SENSOR RISK INTELLIGENCE</p>
+        <h1>Safety, made <span>understandable.</span></h1>
+        <p class="subtitle">Live fire-risk monitoring with occupancy context and clear decision reasons.</p>
+      </div>
+      <div class="toolbar" aria-label="Node controls">
+        <label><span>Monitoring node</span><select id="nodeSelect"><option value="NODE_01">NODE_01</option></select></label>
+        <div id="modelBadge" class="badge">Baseline fallback</div>
+        <div id="warmup" class="warmup">Window: 0/40</div>
+      </div>
+    </section>
+
+    <section class="hero-grid">
+      <article id="riskCard" class="risk-card safe">
+        <div class="card-kicker"><span class="kicker-icon">◉</span>CURRENT RISK</div>
+        <h2 id="riskTier">Waiting</h2>
+        <div id="riskConfidence">No readings received</div>
+        <div class="risk-foot"><span>Decision engine</span><strong>Active</strong></div>
+      </article>
+      <article class="occupancy-card">
+        <div class="card-kicker"><span class="kicker-icon">⌁</span>OCCUPANCY</div>
+        <h2 id="occupancy">Unknown</h2>
+        <div id="occupancyDetail">PIR and mmWave fusion</div>
+        <div class="occupancy-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+      </article>
+      <article class="explanation-card">
+        <div class="card-kicker"><span class="kicker-icon">✦</span>WHY THIS DECISION?</div>
+        <div id="explanation">Start the simulator to receive an explanation.</div>
+        <div id="contributors"></div>
+      </article>
+    </section>
+
+    <section class="sensor-section">
+      <div class="section-heading"><div><p class="eyebrow">SENSOR SNAPSHOT</p><h3>Live environmental signals</h3></div><span>Updated every 2 seconds</span></div>
+      <div class="sensor-grid">
+        <article><span class="sensor-icon smoke-icon">≈</span><div><span>MQ-2 response</span><strong id="mq2">--</strong><small>normalized</small></div></article>
+        <article><span class="sensor-icon co-icon">CO</span><div><span>MQ-7 response</span><strong id="mq7">--</strong><small>normalized</small></div></article>
+        <article><span class="sensor-icon temp-icon">°</span><div><span>Temperature</span><strong id="temperature">--</strong><small>degrees Celsius</small></div></article>
+        <article><span class="sensor-icon humidity-icon">◒</span><div><span>Humidity</span><strong id="humidity">--</strong><small>percent RH</small></div></article>
+        <article><span class="sensor-icon flame-icon">⌁</span><div><span>Flame</span><strong id="flame">--</strong><small>digital signal</small></div></article>
+        <article><span class="sensor-icon latency-icon">↗</span><div><span>Latency</span><strong id="latency">--</strong><small>milliseconds</small></div></article>
+      </div>
+    </section>
+
+    <section class="panel chart-panel">
+      <div class="panel-title"><div><p class="eyebrow">TEMPORAL VIEW</p><h3>Recent sensor trends</h3></div><span>Last 50 readings</span></div>
+      <canvas id="trendChart" width="1000" height="300"></canvas>
+      <div class="legend"><span><i class="smoke"></i>MQ-2</span><span><i class="co"></i>MQ-7</span><span><i class="temp"></i>Temperature <small>scaled</small></span></div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="panel history-panel"><div class="panel-title"><div><p class="eyebrow">AUDIT TRAIL</p><h3>Event history</h3></div><span id="eventCount">0 events</span></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Tier</th><th>MQ-2</th><th>MQ-7</th><th>Temp</th><th>Occupied</th></tr></thead><tbody id="historyBody"><tr><td colspan="6">No readings yet</td></tr></tbody></table></div></article>
+      <article class="panel metrics"><div class="panel-title"><div><p class="eyebrow">SYSTEM HEALTH</p><h3>Runtime metrics</h3></div></div><div><span>Total predictions</span><strong id="totalPredictions">0</strong></div><div><span>Average latency</span><strong id="averageLatency">0 ms</strong></div><div><span>95th percentile</span><strong id="p95Latency">0 ms</strong></div><div><span>Explanation</span><strong id="explanationMethod">--</strong></div></article>
+    </section>
+  </main>
+  <footer>FireSense AI prototype &nbsp;•&nbsp; Explainable adaptive multi-sensor safety system</footer>
+  <script src="/app.js"></script>
+</body>
+</html>
